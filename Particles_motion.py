@@ -13,7 +13,8 @@ tmin = 0. # t_foc - 0.5 * tau - 0.1 * tau           # Initial moment of time
 ntime = 10010                        # Number of time points
 t_ntime = ntime
 
-a0 = 0.001
+nb_a0 = float(sys.argv[4])
+a0 = 0.001 + 1. / nb_a0 * float(sys.argv[3])
 w0 = 10.
 zR = 0.5 * w0 ** 2
 p = 0
@@ -21,8 +22,8 @@ l = 1
 
 comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
-nb_proc = 16    # Number of running processes; number of particles on r0 is 2 * nb_proc
-nb_r0 = 20      # Number of particles on the distance r0
+nb_proc = comm.Get_size()    # Number of running processes; number of particles on r0 is 2 * nb_proc
+nb_r0 = int(sys.argv[2])      # Number of particles on the distance r0
 
 def g(t):
     if tau == 0.0:
@@ -70,12 +71,29 @@ pt2 = PT.Particle(r0_32, p0, emf)
 pt1.set_trajectory(arr_t)
 pt2.set_trajectory(arr_t)
 pr1 = pt1.get_pr()[-1]
+pz1 = pt1.get_pz()[-1]
+Lz1 = pt1.get_Lz()[-1]
 pr2 = pt2.get_pr()[-1]
+pz2 = pt2.get_pz()[-1]
+Lz2 = pt2.get_Lz()[-1]
 
+output_dir = sys.argv[5]
 # -pi <= theta < 0
-with open("/home/bearlune/OAM_transfer/Single_particle_effects/output/output1_" + str(sys.argv[1]) + "_" + str(rank) + ".txt", "w+") as f:
+with open(output_dir + "/pr1_" + str(sys.argv[1]) + "_" + str(rank) + ".txt", "w+") as f:
     f.write("%s\n" % pr1)
 
+with open(output_dir + "/pz1_" + str(sys.argv[1]) + "_" + str(rank) + ".txt", "w+") as f:
+    f.write("%s\n" % pz1)
+
+with open(output_dir + "/Lz1_" + str(sys.argv[1]) + "_" + str(rank) + ".txt", "w+") as f:
+    f.write("%s\n" % Lz1)
+
 # 0 <= theta < pi
-with open("/home/bearlune/OAM_transfer/Single_particle_effects/output/output2_" + str(sys.argv[1]) + "_" + str(rank) + ".txt", "w+") as f:
+with open(output_dir + "/pr2_" + str(sys.argv[1]) + "_" + str(rank) + ".txt", "w+") as f:
     f.write("%s\n" % pr2)
+
+with open(output_dir + "/pz2_" + str(sys.argv[1]) + "_" + str(rank) + ".txt", "w+") as f:
+    f.write("%s\n" % pz2)
+
+with open(output_dir + "/Lz2_" + str(sys.argv[1]) + "_" + str(rank) + ".txt", "w+") as f:
+    f.write("%s\n" % Lz2)
