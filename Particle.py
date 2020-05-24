@@ -52,7 +52,7 @@ class Particle:
     # ========================================= Setting values =========================================================
     def set_trajectory(self, arr_t):
         self.arr_t = arr_t
-        x = solve_ivp(self.__sys, [self.arr_t[0], self.arr_t[len(self.arr_t) - 1]], np.hstack((self.get_r0_3(), self.get_p0())), t_eval=self.arr_t, atol=1e-35, rtol=1e-10)
+        x = solve_ivp(self.__sys, [self.arr_t[0], self.arr_t[len(self.arr_t) - 1]], np.hstack((self.get_r0_3(), self.get_p0())), t_eval=self.arr_t, atol=1e-35, rtol=1e-13)
         self.r_3 = np.array([np.array((x.y[0][t], x.y[1][t], x.y[2][t])) for t in range(len(self.arr_t))])
         self.p = np.array([np.array((x.y[3][t], x.y[4][t], x.y[5][t])) for t in range(len(self.arr_t))])
 
